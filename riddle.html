@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Riddler</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Mono', monospace;
+      background: #f9f8f5;
+      color: #1a1a1a;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 2.5rem 1rem 4rem;
+    }
+
+    #app { width: 100%; max-width: 660px; }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 0.4rem;
+    }
+    .title {
+      font-family: 'Playfair Display', serif;
+      font-size: 34px;
+      font-style: italic;
+      font-weight: 400;
+      letter-spacing: -0.5px;
+    }
+    .score-badge {
+      font-size: 12px;
+      font-weight: 500;
+      color: #666;
+      background: #eeecea;
+      border: 0.5px solid #ddd;
+      border-radius: 8px;
+      padding: 4px 14px;
+      letter-spacing: 0.5px;
+    }
+    .subtitle {
+      font-size: 12px;
+      color: #aaa;
+      margin-bottom: 1.75rem;
+    }
+
+    /* Categories */
+    .category-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+    .cat-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      padding: 5px 14px;
+      border-radius: 999px;
+      border: 0.5px solid #ccc;
+      background: transparent;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .cat-btn:hover { background: #eeecea; }
+    .cat-btn.active { background: #1a1a1a; color: #f9f8f5; border-color: #1a1a1a; }
+
+    /* Riddle card */
+    .riddle-card {
+      border: 0.5px solid #ddd;
+      border-radius: 14px;
+      background: #fff;
+      padding: 2rem 2rem 1.5rem;
+      margin-bottom: 1.25rem;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .riddle-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .riddle-num { font-size: 10px; letter-spacing: 1.5px; color: #aaa; text-transform: uppercase; }
+    .cat-tag {
+      font-size: 10px;
+      letter-spacing: 0.8px;
+      color: #888;
+      background: #f4f3f0;
+      border-radius: 999px;
+      padding: 2px 10px;
+      text-transform: uppercase;
+    }
+    .riddle-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 21px;
+      font-style: italic;
+      line-height: 1.6;
+      flex: 1;
+    }
+    .hint-line {
+      font-size: 12px;
+      color: #aaa;
+      visibility: hidden;
+      transition: opacity 0.2s;
+    }
+    .hint-line.visible { visibility: visible; }
+    .hint-icon { margin-right: 4px; }
+
+    /* Answer row */
+    .answer-row {
+      display: flex;
+      gap: 10px;
+    }
+    .answer-input {
+      flex: 1;
+      font-family: 'DM Mono', monospace;
+      font-size: 14px;
+      padding: 10px 14px;
+      border: 0.5px solid #ccc;
+      border-radius: 8px;
+      background: #f4f3f0;
+      color: #1a1a1a;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .answer-input:focus { border-color: #999; }
+    .answer-input::placeholder { color: #bbb; }
+    .answer-input:disabled { opacity: 0.55; }
+
+    .check-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: none;
+      background: #1a1a1a;
+      color: #f9f8f5;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      white-space: nowrap;
+    }
+    .check-btn:hover { opacity: 0.82; }
+    .check-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    /* Feedback */
+    .feedback {
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      align-items: center;
+      gap: 8px;
+      display: none;
+    }
+    .feedback.show { display: flex; }
+    .feedback.correct { background: #eaf3de; color: #27500a; border: 0.5px solid #b8d98a; }
+    .feedback.wrong   { background: #fcebeb; color: #a32d2d; border: 0.5px solid #f0a0a0; }
+    .feedback.reveal  { background: #e6f1fb; color: #185fa5; border: 0.5px solid #9fcbf0; }
+
+    /* Action buttons */
+    .action-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+    .ghost-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: #555;
+      border: 0.5px solid #ddd;
+      background: transparent;
+      border-radius: 8px;
+      padding: 7px 14px;
+      cursor: pointer;
+      transition: background 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .ghost-btn:hover { background: #eeecea; }
+
+    /* Progress dots */
+    .dots-row { display: flex; gap: 7px; margin-top: 1.25rem; flex-wrap: wrap; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #ddd; transition: background 0.25s; }
+    .dot.correct { background: #3b6d11; }
+    .dot.wrong   { background: #a32d2d; }
+
+    /* End screen */
+    .end-card {
+      border: 0.5px solid #ddd;
+      border-radius: 14px;
+      background: #fff;
+      padding: 3rem 2rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+    .end-emoji { font-size: 48px; }
+    .end-title { font-family: 'Playfair Display', serif; font-size: 26px; font-style: italic; }
+    .end-sub   { font-size: 13px; color: #888; }
+    .restart-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      font-weight: 500;
+      margin-top: 0.5rem;
+      padding: 10px 24px;
+      border-radius: 8px;
+      border: 0.5px solid #ccc;
+      background: #1a1a1a;
+      color: #f9f8f5;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .restart-btn:hover { opacity: 0.82; }
+
+    /* SVG icons (no CDN needed) */
+    .icon { width: 14px; height: 14px; vertical-align: middle; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  </style>
+</head>
+<body>
+<div id="app">
+  <div class="header">
+    <div class="title">The Riddler</div>
+    <div class="score-badge" id="score-badge">0 / 0</div>
+  </div>
+  <div class="subtitle">guess the answer — type and press enter</div>
+  <div class="category-row" id="cats"></div>
+  <div id="riddle-area"></div>
+  <div class="dots-row" id="dots"></div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+//  RIDDLE BANK  (add your own easily!)
+//  Format: { q, a, hint, cat }
+//  cat must match one of the CATEGORIES below
+// ─────────────────────────────────────────────
+const RIDDLES = [
+  // CLASSIC
+  { q:"The more you take, the more you leave behind. What am I?", a:"footsteps", hint:"think about walking", cat:"classic" },
+  { q:"I speak without a mouth and hear without ears. I have no body, but I come alive with wind. What am I?", a:"echo", hint:"sound bounces back", cat:"classic" },
+  { q:"I have cities, but no houses live there. I have mountains, but no trees grow there. I have water, but no fish swim there. What am I?", a:"map", hint:"used for navigation", cat:"classic" },
+  { q:"The more you have of it, the less you see. What am I?", a:"darkness", hint:"opposite of light", cat:"classic" },
+  { q:"I have hands but cannot clap. What am I?", a:"clock", hint:"it tells the time", cat:"classic" },
+  { q:"What has to be broken before you can use it?", a:"egg", hint:"breakfast ingredient", cat:"classic" },
+  { q:"I'm light as a feather, yet the strongest man can't hold me for more than five minutes. What am I?", a:"breath", hint:"you do it to live", cat:"classic" },
+  { q:"What can run but never walks, has a mouth but never talks, has a head but never weeps?", a:"river", hint:"flows downhill", cat:"classic" },
+  { q:"The person who makes it sells it. The person who buys it never uses it. The person who uses it never knows they're using it. What is it?", a:"coffin", hint:"made of wood, used once", cat:"classic" },
+  { q:"I am not alive, but I grow; I don't have lungs, but I need air; I don't have a mouth, but water kills me. What am I?", a:"fire", hint:"hot and bright", cat:"classic" },
+
+  // NATURE
+  { q:"I have a neck but no head. I have two arms but no hands. What am I?", a:"bottle", hint:"you drink from it", cat:"nature" },
+  { q:"I wear a green coat in summer and a white coat in winter. In spring I shed my coat. What am I?", a:"tree", hint:"found in a forest", cat:"nature" },
+  { q:"I fly without wings, I cry without eyes. Wherever I go, darkness follows me. What am I?", a:"cloud", hint:"found in the sky", cat:"nature" },
+  { q:"Thousands of layers but no skin. Sharp tongue but no voice. Lives in the sea but breathes no water. What am I?", a:"coral", hint:"a reef creature", cat:"nature" },
+  { q:"I build a house with no nails or wood. My home is made of something I produce. What am I?", a:"spider", hint:"eight legs", cat:"nature" },
+  { q:"I have no eyes, no ears, and no legs, but I can move the earth. What am I?", a:"worm", hint:"lives underground", cat:"nature" },
+  { q:"I am always hungry and must always be fed. The finger I touch will soon turn red. What am I?", a:"fire", hint:"keep away from trees", cat:"nature" },
+  { q:"Born in water, raised on land. Returns to water at the end. What am I?", a:"frog", hint:"it hops and croaks", cat:"nature" },
+  { q:"I dance on one foot, pointing toward the sun. I never move yet travel all day long. What am I?", a:"sundial", hint:"tells time with shadow", cat:"nature" },
+  { q:"I am the child of water but when water touches me I die. What am I?", a:"salt", hint:"found in the ocean", cat:"nature" },
+
+  // WORDPLAY
+  { q:"What word becomes shorter when you add two letters to it?", a:"short", hint:"the answer is in the question", cat:"wordplay" },
+  { q:"I am always in front of you but cannot be seen. What am I?", a:"future", hint:"not the past", cat:"wordplay" },
+  { q:"What English word has three consecutive double letters?", a:"bookkeeper", hint:"someone who keeps records", cat:"wordplay" },
+  { q:"What 5-letter word becomes shorter when you add 2 letters to it?", a:"short", hint:"read the riddle carefully", cat:"wordplay" },
+  { q:"Say my name and I disappear. What am I?", a:"silence", hint:"the absence of sound", cat:"wordplay" },
+  { q:"I am an odd number. Take away a letter and I become even. What number am I?", a:"seven", hint:"between six and eight", cat:"wordplay" },
+  { q:"What comes once in a minute, twice in a moment, but never in a thousand years?", a:"the letter m", hint:"look at the words in the riddle", cat:"wordplay" },
+  { q:"I have one eye but cannot see, a tail but am not alive. What am I?", a:"needle", hint:"used for sewing", cat:"wordplay" },
+  { q:"Forward I am heavy; backward I am not. What am I?", a:"ton", hint:"a unit of weight", cat:"wordplay" },
+  { q:"I start with E, end with E, and usually contain one letter. What am I?", a:"envelope", hint:"used for posting things", cat:"wordplay" },
+
+  // LOGIC
+  { q:"A man walks into a restaurant and asks for a glass of water. The waiter pulls out a gun and points it at him. The man says 'thank you' and leaves. Why?", a:"hiccups", hint:"the gun scared them away", cat:"logic" },
+  { q:"Two fathers and two sons sat down to eat eggs for breakfast. They ate exactly three eggs, yet each person had an egg. How?", a:"three generations", hint:"grandfather, father, son", cat:"logic" },
+  { q:"A rooster lays an egg on top of a barn roof. Which way does it roll?", a:"roosters don't lay eggs", hint:"roosters are male", cat:"logic" },
+  { q:"You are in a dark room with a candle, a wood stove, and a gas lamp. You only have one match. What do you light first?", a:"the match", hint:"think before you act", cat:"logic" },
+  { q:"What can you put between 7 and 8 to make the result greater than 7 but less than 8?", a:"a decimal point", hint:"7.8", cat:"logic" },
+  { q:"A doctor has a brother who is a lawyer, but the lawyer has no brother. How?", a:"the doctor is a woman", hint:"think about gender", cat:"logic" },
+  { q:"How many months have 28 days?", a:"all of them", hint:"every month has at least 28", cat:"logic" },
+  { q:"If you have me, you want to share me. If you share me, you no longer have me. What am I?", a:"secret", hint:"don't tell anyone", cat:"logic" },
+  { q:"The more you take, the more you leave behind. I am removed from a mine, then locked up in a trunk. Used by everyone, yet everyone has their own. What am I?", a:"key", hint:"opens a lock", cat:"logic" },
+  { q:"A woman shoots her husband, then holds him underwater for five minutes. An hour later they go out to dinner. How?", a:"photographer", hint:"she took his picture", cat:"logic" },
+
+  // DARK HUMOR
+  { q:"The man who invented it doesn't want it. The man who bought it doesn't need it. The man who needs it doesn't know it. What is it?", a:"coffin", hint:"your last home", cat:"dark humor" },
+  { q:"I have a head and a tail, but no body. I can make you rich or leave you broke. What am I?", a:"coin", hint:"heads or tails", cat:"dark humor" },
+  { q:"What gets smaller every time it takes a bath?", a:"soap", hint:"used in the shower", cat:"dark humor" },
+  { q:"I can be cracked, I can be made. I can be told, I can be played. What am I?", a:"joke", hint:"makes you laugh", cat:"dark humor" },
+  { q:"I am the beginning of the end, and the end of time and space. I am essential to creation, and I surround every place. What am I?", a:"the letter e", hint:"look at the words in the question", cat:"dark humor" },
+  { q:"What has four legs in the morning, two legs at noon, and three legs in the evening?", a:"human", hint:"the riddle of the sphinx", cat:"dark humor" },
+  { q:"They come out at night without being called. They are lost in the day without being stolen. What are they?", a:"stars", hint:"look up on a clear night", cat:"dark humor" },
+  { q:"I am always hungry. I must always be fed. But give me water and I will quickly be dead. What am I?", a:"fire", hint:"hot and dangerous", cat:"dark humor" },
+  { q:"A man is found dead in a locked room. The only clue is a puddle of water. How did he die?", a:"ice", hint:"something melted", cat:"dark humor" },
+  { q:"What building has the most stories?", a:"library", hint:"full of books", cat:"dark humor" },
+];
+
+const CATEGORIES = ['classic', 'nature', 'wordplay', 'logic', 'dark humor'];
+const QUESTIONS_PER_GAME = 10;
+
+// ─────────────────────────────────────────────
+//  STATE
+// ─────────────────────────────────────────────
+let state = {
+  cat: 'all',
+  deck: [],
+  idx: 0,
+  score: 0,
+  answered: false,
+  history: [],
+};
+
+// ─────────────────────────────────────────────
+//  HELPERS
+// ─────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function levenshtein(a, b) {
+  const m = a.length, n = b.length;
+  const dp = Array.from({ length: m + 1 }, (_, i) =>
+    Array.from({ length: n + 1 }, (_, j) => i || j)
+  );
+  for (let i = 1; i <= m; i++)
+    for (let j = 1; j <= n; j++)
+      dp[i][j] = a[i-1] === b[j-1]
+        ? dp[i-1][j-1]
+        : 1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
+  return dp[m][n];
+}
+
+function isCorrect(guess, answer) {
+  const g = guess.trim().toLowerCase();
+  const a = answer.trim().toLowerCase();
+  return g === a || a.includes(g) || g.includes(a) || levenshtein(g, a) <= 1;
+}
+
+// ─────────────────────────────────────────────
+//  BUILD DECK
+// ─────────────────────────────────────────────
+function buildDeck() {
+  const pool = state.cat === 'all'
+    ? RIDDLES
+    : RIDDLES.filter(r => r.cat === state.cat);
+  state.deck = shuffle(pool).slice(0, QUESTIONS_PER_GAME);
+  state.idx = 0;
+  state.score = 0;
+  state.answered = false;
+  state.history = [];
+}
+
+// ─────────────────────────────────────────────
+//  RENDER CATEGORIES
+// ─────────────────────────────────────────────
+function renderCats() {
+  const cats = ['all', ...CATEGORIES];
+  $('cats').innerHTML = cats.map(c =>
+    `<button class="cat-btn${state.cat === c ? ' active' : ''}" onclick="setCat('${c}')">${c}</button>`
+  ).join('');
+}
+
+function setCat(c) {
+  state.cat = c;
+  renderCats();
+  buildDeck();
+  renderRiddle();
+  renderDots();
+  updateScore();
+}
+
+// ─────────────────────────────────────────────
+//  RENDER DOTS
+// ─────────────────────────────────────────────
+function renderDots() {
+  $('dots').innerHTML = state.history.map(h =>
+    `<div class="dot ${h ? 'correct' : 'wrong'}"></div>`
+  ).join('');
+}
+
+// ─────────────────────────────────────────────
+//  RENDER RIDDLE
+// ─────────────────────────────────────────────
+function renderRiddle() {
+  if (state.idx >= state.deck.length) { renderEnd(); return; }
+
+  const r = state.deck[state.idx];
+  const num = state.idx + 1;
+  const total = state.deck.length;
+
+  $('riddle-area').innerHTML = `
+    <div class="riddle-card">
+      <div class="riddle-meta">
+        <span class="riddle-num">riddle ${num} of ${total}</span>
+        <span class="cat-tag">${r.cat}</span>
+      </div>
+      <div class="riddle-text">${r.q}</div>
+      <div class="hint-line" id="hint-line">
+        <span class="hint-icon">💡</span>${r.hint}
+      </div>
+    </div>
+
+    <div class="answer-row">
+      <input class="answer-input" id="ans-input" placeholder="type your answer…" autocomplete="off" />
+      <button class="check-btn" id="check-btn" onclick="checkAnswer()">check</button>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <div class="action-row">
+      <button class="ghost-btn" onclick="showHint()">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.5-1.3 4.7-3.3 6l-.7 2H9l-.7-2A7 7 0 0 1 5 9a7 7 0 0 1 7-7z"/><line x1="9" y1="21" x2="15" y2="21"/></svg>
+        hint
+      </button>
+      <button class="ghost-btn" onclick="revealAnswer()">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+        reveal
+      </button>
+      <button class="ghost-btn" onclick="skipRiddle()">
+        <svg class="icon" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        skip
+      </button>
+    </div>`;
+
+  const inp = $('ans-input');
+  inp.addEventListener('keydown', e => { if (e.key === 'Enter') checkAnswer(); });
+  inp.focus();
+  state.answered = false;
+}
+
+// ─────────────────────────────────────────────
+//  ACTIONS
+// ─────────────────────────────────────────────
+function checkAnswer() {
+  if (state.answered) return;
+  const inp = $('ans-input');
+  const guess = inp.value;
+  if (!guess.trim()) return;
+
+  const r = state.deck[state.idx];
+  const correct = isCorrect(guess, r.a);
+
+  state.answered = true;
+  state.history.push(correct);
+  if (correct) state.score++;
+
+  inp.disabled = true;
+  $('check-btn').disabled = true;
+
+  const fb = $('feedback');
+  fb.className = 'feedback show ' + (correct ? 'correct' : 'wrong');
+  fb.innerHTML = correct
+    ? `✓ &nbsp;correct! the answer is <strong>${r.a}</strong>`
+    : `✗ &nbsp;not quite — the answer was <strong>${r.a}</strong>`;
+
+  updateScore();
+  renderDots();
+
+  // auto-advance after 1.8 seconds
+  setTimeout(() => {
+    state.idx++;
+    renderRiddle();
+    renderDots();
+  }, 1800);
+}
+
+function showHint() {
+  const h = $('hint-line');
+  if (h) h.classList.add('visible');
+}
+
+function revealAnswer() {
+  if (state.answered) return;
+  const r = state.deck[state.idx];
+  state.answered = true;
+  state.history.push(false);
+
+  const inp = $('ans-input');
+  if (inp) inp.disabled = true;
+  const btn = $('check-btn');
+  if (btn) btn.disabled = true;
+
+  const fb = $('feedback');
+  fb.className = 'feedback show reveal';
+  fb.innerHTML = `👁 &nbsp;the answer is <strong>${r.a}</strong>`;
+
+  updateScore();
+  renderDots();
+
+  setTimeout(() => {
+    state.idx++;
+    renderRiddle();
+    renderDots();
+  }, 1800);
+}
+
+function skipRiddle() {
+  if (!state.answered) {
+    state.history.push(false);
+    renderDots();
+  }
+  state.idx++;
+  renderRiddle();
+}
+
+function updateScore() {
+  $('score-badge').textContent = `${state.score} / ${state.history.length}`;
+}
+
+// ─────────────────────────────────────────────
+//  END SCREEN
+// ─────────────────────────────────────────────
+function renderEnd() {
+  const total = state.deck.length;
+  const pct = Math.round((state.score / total) * 100);
+  let emoji = '🧠', msg = 'Not bad, riddler!';
+  if (pct === 100)    { emoji = '🏆'; msg = 'Perfect score! Are you a riddle wizard?'; }
+  else if (pct >= 80) { emoji = '🌟'; msg = 'Impressive! Almost perfect.'; }
+  else if (pct >= 60) { emoji = '😎'; msg = 'Solid effort! Keep it up.'; }
+  else if (pct >= 40) { emoji = '🤔'; msg = 'Room to grow — riddles are tricky!'; }
+  else                { emoji = '😅'; msg = 'The riddles won this round…'; }
+
+  $('riddle-area').innerHTML = `
+    <div class="end-card">
+      <div class="end-emoji">${emoji}</div>
+      <div class="end-title">${msg}</div>
+      <div class="end-sub">you got <strong>${state.score} out of ${total}</strong> (${pct}%)</div>
+      <button class="restart-btn" onclick="restart()">play again</button>
+    </div>`;
+
+  $('dots').innerHTML = state.history.map(h =>
+    `<div class="dot ${h ? 'correct' : 'wrong'}"></div>`
+  ).join('');
+}
+
+function restart() {
+  buildDeck();
+  renderRiddle();
+  renderDots();
+  updateScore();
+}
+
+// ─────────────────────────────────────────────
+//  INIT
+// ─────────────────────────────────────────────
+renderCats();
+buildDeck();
+renderRiddle();
+</script>
+</body>
+</html>

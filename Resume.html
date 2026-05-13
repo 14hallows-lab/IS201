@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kate Hardy — Resume</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --cream: #faf8f4;
+      --white: #ffffff;
+      --sky: #c8dff0;
+      --sky-light: #e4eff8;
+      --sky-mid: #a9cce3;
+      --sky-deep: #6da8cc;
+      --text: #3a4a54;
+      --text-light: #7a919e;
+      --accent: #5a9cbd;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background-color: var(--cream);
+      font-family: 'Jost', sans-serif;
+      color: var(--text);
+      font-weight: 300;
+      line-height: 1.7;
+    }
+
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      overflow: hidden;
+    }
+    .hero-image-col { position: relative; overflow: hidden; }
+    .hero-image-col img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center top;
+      display: block;
+      filter: saturate(0.85) brightness(1.05);
+    }
+    .hero-image-col::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(200,223,240,0.18) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .hero-text-col {
+      background: var(--white);
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 5rem 4rem 5rem 5rem;
+      position: relative;
+    }
+    .hero-text-col::before {
+      content: '';
+      position: absolute; top: -60px; right: -60px;
+      width: 180px; height: 180px;
+      border-radius: 50%;
+      background: var(--sky-light);
+      opacity: 0.6; pointer-events: none;
+    }
+    .hero-eyebrow {
+      font-family: 'Jost', sans-serif;
+      font-weight: 400; font-size: 0.7rem;
+      letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--sky-deep); margin-bottom: 1rem;
+    }
+    .hero-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: clamp(3rem, 5vw, 4.8rem);
+      line-height: 1.05; color: var(--text); margin-bottom: 1.5rem;
+    }
+    .hero-name em { font-style: italic; color: var(--sky-deep); }
+    .hero-divider { width: 48px; height: 1px; background: var(--sky-mid); margin-bottom: 1.5rem; }
+    .hero-tagline { font-size: 0.95rem; color: var(--text-light); max-width: 340px; margin-bottom: 2.5rem; line-height: 1.8; }
+    .contact-pills { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+    .pill {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: var(--sky-light); color: var(--accent);
+      font-size: 0.75rem; font-weight: 500; letter-spacing: 0.04em;
+      padding: 0.4rem 0.9rem; border-radius: 100px;
+      text-decoration: none; transition: background 0.2s, color 0.2s;
+    }
+    .pill:hover { background: var(--sky-mid); color: var(--white); }
+
+    .main { max-width: 980px; margin: 0 auto; padding: 5rem 2rem 6rem; }
+
+    .section-label {
+      font-family: 'Jost', sans-serif;
+      font-weight: 400; font-size: 0.65rem;
+      letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--sky-deep); margin-bottom: 2rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--sky); }
+
+    .card {
+      background: var(--white);
+      border-radius: 16px; padding: 2.4rem 2.8rem;
+      margin-bottom: 1.2rem;
+      border: 1px solid var(--sky-light);
+      transition: box-shadow 0.25s, transform 0.25s;
+      position: relative; overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+      background: linear-gradient(180deg, var(--sky-mid), var(--sky-light));
+      border-radius: 3px 0 0 3px;
+    }
+    .card:hover { box-shadow: 0 8px 32px rgba(109,168,204,0.12); transform: translateY(-2px); }
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.8rem; }
+    .card-title { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 1.35rem; color: var(--text); line-height: 1.2; }
+    .card-subtitle { font-size: 0.8rem; font-weight: 400; color: var(--text-light); margin-top: 0.15rem; }
+    .card-meta { text-align: right; }
+    .card-date { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.06em; color: var(--sky-deep); background: var(--sky-light); padding: 0.25rem 0.75rem; border-radius: 100px; white-space: nowrap; }
+    .card-location { font-size: 0.72rem; color: var(--text-light); margin-top: 0.35rem; text-align: right; }
+    .card ul { list-style: none; padding: 0; margin-top: 0.6rem; }
+    .card ul li { font-size: 0.88rem; color: var(--text-light); padding: 0.25rem 0 0.25rem 1.2rem; position: relative; line-height: 1.65; }
+    .card ul li::before { content: '·'; position: absolute; left: 0; color: var(--sky-mid); font-size: 1.2rem; line-height: 1.3; }
+
+    .edu-grid { display: grid; grid-template-columns: 1fr auto; gap: 1rem; }
+    .gpa-badge { background: linear-gradient(135deg, var(--sky-light), var(--sky)); border-radius: 12px; padding: 1rem 1.5rem; text-align: center; align-self: center; }
+    .gpa-number { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 600; color: var(--sky-deep); line-height: 1; }
+    .gpa-label { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-light); margin-top: 0.2rem; }
+
+    .skills-grid { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.5rem; }
+    .skill-tag { font-size: 0.78rem; font-weight: 400; color: var(--text); background: var(--sky-light); padding: 0.35rem 0.9rem; border-radius: 8px; border: 1px solid var(--sky); }
+
+    .section { margin-bottom: 4rem; }
+
+    footer { text-align: center; padding: 2.5rem; font-size: 0.72rem; color: var(--text-light); letter-spacing: 0.08em; border-top: 1px solid var(--sky-light); }
+
+    .fade-up { opacity: 0; transform: translateY(22px); animation: fadeUp 0.7s ease forwards; }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    .hero-text-col > * { animation: fadeUp 0.8s ease forwards; opacity: 0; }
+    .hero-eyebrow  { animation-delay: 0.1s; }
+    .hero-name     { animation-delay: 0.25s; }
+    .hero-divider  { animation-delay: 0.35s; }
+    .hero-tagline  { animation-delay: 0.45s; }
+    .contact-pills { animation-delay: 0.55s; }
+
+    @media (max-width: 768px) {
+      .hero { grid-template-columns: 1fr; min-height: auto; }
+      .hero-image-col { height: 55vw; min-height: 260px; }
+      .hero-text-col { padding: 3rem 2rem; }
+      .hero-text-col::before { display: none; }
+      .card { padding: 1.8rem 1.6rem; }
+      .card-header { flex-direction: column; }
+      .card-meta { text-align: left; }
+      .edu-grid { grid-template-columns: 1fr; }
+      .gpa-badge { justify-self: start; }
+    }
+  </style>
+</head>
+<body>
+
+  <section class="hero">
+    <div class="hero-image-col">
+      <img src="annefischerphotography-128.jpg" alt="Kate Hardy" />
+    </div>
+    <div class="hero-text-col">
+      <p class="hero-eyebrow">Resume</p>
+      <h1 class="hero-name">Kate<br/><em>Hardy</em></h1>
+      <div class="hero-divider"></div>
+      <p class="hero-tagline">Plant &amp; Landscape Systems student at Brigham Young University, with a minor in Business. Expected graduation December 2027.</p>
+      <div class="contact-pills">
+        <a class="pill" href="tel:5416046642">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.85a16 16 0 0 0 6.29 6.29l.95-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          (541) 604-6642
+        </a>
+        <a class="pill" href="mailto:hardyk1@byu.edu">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+          hardyk1@byu.edu
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <main class="main">
+
+    <section class="section">
+      <p class="section-label">Education</p>
+      <div class="card fade-up" style="animation-delay:0.05s">
+        <div class="edu-grid">
+          <div>
+            <div class="card-header">
+              <div>
+                <div class="card-title">Brigham Young University</div>
+                <div class="card-subtitle">BS, Plant and Landscape Systems &nbsp;·&nbsp; Minor in Business</div>
+              </div>
+              <div class="card-meta">
+                <span class="card-date">Expected Dec 2027</span>
+                <div class="card-location">Provo, UT</div>
+              </div>
+            </div>
+            <ul>
+              <li>Scholarships awarded from BYU</li>
+            </ul>
+          </div>
+          <div class="gpa-badge">
+            <div class="gpa-number">3.9</div>
+            <div class="gpa-label">GPA</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <p class="section-label">Experience</p>
+
+      <div class="card fade-up" style="animation-delay:0.1s">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Landscape Specialist</div>
+            <div class="card-subtitle">Brigham Young University</div>
+          </div>
+          <div class="card-meta">
+            <span class="card-date">Aug 2025 – Present</span>
+            <div class="card-location">Provo, UT</div>
+          </div>
+        </div>
+        <ul>
+          <li>Maintained the health of the grounds</li>
+          <li>Ensured accuracy of painted lines through attention to detail and planning on the soccer field</li>
+          <li>Communicated with a team to ensure tasks were complete</li>
+        </ul>
+      </div>
+
+      <div class="card fade-up" style="animation-delay:0.15s">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Research Assistant</div>
+            <div class="card-subtitle">Brigham Young University</div>
+          </div>
+          <div class="card-meta">
+            <span class="card-date">Nov 2024 – Present</span>
+            <div class="card-location">Provo, UT</div>
+          </div>
+        </div>
+        <ul>
+          <li>Created and executed experiment plans</li>
+          <li>Worked with a team of other students to carry out tasks</li>
+          <li>Cultivated strong work ethic by carrying out tedious and long experiments</li>
+        </ul>
+      </div>
+
+      <div class="card fade-up" style="animation-delay:0.2s">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Optician / Ophthalmic Tech</div>
+            <div class="card-subtitle">Summit Family Eyecare</div>
+          </div>
+          <div class="card-meta">
+            <span class="card-date">Apr – Aug 2024</span>
+            <div class="card-location">Redmond, OR</div>
+          </div>
+        </div>
+        <ul>
+          <li>Prepared, dispensed, and ordered glasses</li>
+          <li>Pretested patients prior to them seeing the doctor</li>
+          <li>Refined customer service skills through scheduling, answering phones, and interacting with patients</li>
+        </ul>
+      </div>
+
+      <div class="card fade-up" style="animation-delay:0.25s">
+        <div class="card-header">
+          <div>
+            <div class="card-title">General Manager</div>
+            <div class="card-subtitle">Jordans Fruit Stand</div>
+          </div>
+          <div class="card-meta">
+            <span class="card-date">Mar 2020 – Aug 2021</span>
+            <div class="card-location">Redmond, OR</div>
+          </div>
+        </div>
+        <ul>
+          <li>Oversaw the storefront, maintained stock levels, and ran the register</li>
+          <li>Boosted the atmosphere of the store and built meaningful relationships with customers</li>
+          <li>Increased revenue through efforts in customer service and product management</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section">
+      <p class="section-label">Volunteer Experience</p>
+
+      <div class="card fade-up" style="animation-delay:0.1s">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Full-Time Representative</div>
+            <div class="card-subtitle">The Church of Jesus Christ of Latter-day Saints</div>
+          </div>
+          <div class="card-meta">
+            <span class="card-date">May 2022 – Nov 2023</span>
+            <div class="card-location">Scotland / Ireland</div>
+          </div>
+        </div>
+        <ul>
+          <li>Gained a strong ability to work with others as well as the ability to work well under pressure</li>
+          <li>Developed strong work ethic by working 12-hour workdays to meet specific goals</li>
+          <li>Increased volunteer effectiveness through problem solving, building relationships, and goal setting</li>
+        </ul>
+      </div>
+
+      <div class="card fade-up" style="animation-delay:0.15s">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Volunteer &amp; Program Support Coordinator</div>
+            <div class="card-subtitle">Bright Eyes Bright Future</div>
+          </div>
+          <div class="card-meta">
+            <span class="card-date">Jun 2018 – Present</span>
+          </div>
+        </div>
+        <ul>
+          <li>Enhanced abilities to plan and organize through coordinating fundraisers and humanitarian trips</li>
+          <li>Acquired the ability to interact with people of different cultures and backgrounds</li>
+        </ul>
+      </div>
+
+      <div class="card fade-up" style="animation-delay:0.2s">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Volunteer</div>
+            <div class="card-subtitle">Bristol Hospice</div>
+          </div>
+          <div class="card-meta">
+            <span class="card-date">Jan 2025 – Present</span>
+          </div>
+        </div>
+        <ul>
+          <li>Formulated the ability to connect and maintain meaningful relationships with patients</li>
+          <li>Provided comfort to patients at the end of their lives</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section">
+      <p class="section-label">Skills &amp; Achievements</p>
+      <div class="card fade-up" style="animation-delay:0.1s">
+        <div class="skills-grid">
+          <span class="skill-tag">Fast &amp; Efficient Learner</span>
+          <span class="skill-tag">Team Collaboration</span>
+          <span class="skill-tag">Customer Service</span>
+          <span class="skill-tag">Research &amp; Experimentation</span>
+          <span class="skill-tag">Goal Setting</span>
+          <span class="skill-tag">Problem Solving</span>
+          <span class="skill-tag">Cross-Cultural Communication</span>
+          <span class="skill-tag">BYU Scholarship Recipient</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    Kate Hardy &nbsp;·&nbsp; hardyk1@byu.edu &nbsp;·&nbsp; (541) 604-6642
+  </footer>
+
+</body>
+</html>

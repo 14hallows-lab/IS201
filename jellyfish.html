@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Jellyfish — Creatures of the Deep</title>
+  <!-- External stylesheet (from scratch, no Bootstrap) -->
+  <link rel="stylesheet" href="css/jellyfish.css" />
+</head>
+<body>
+
+  <!-- ══ NAVIGATION ══ -->
+  <nav id="nav">
+    <a class="nav-logo" href="#">✦ Jellyfish</a>
+    <ul>
+      <li><a href="#facts">Facts</a></li>
+      <li><a href="#species">Species</a></li>
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="#video">Watch</a></li>
+      <li><a href="#data">Data</a></li>
+      <li><a href="Resume.html" target="_blank">My Resume</a></li>
+      <li><a href="riddle.html" target="_blank">Riddle Game</a></li>
+    </ul>
+  </nav>
+
+  <!-- ══ HERO ══ -->
+  <section id="hero">
+    <h1>Jelly<span>fish</span></h1>
+    <p class="hero-sub">
+      Ancient, alien, and utterly hypnotic — jellyfish have drifted through Earth's oceans
+      for over 500 million years, long before the dinosaurs existed.
+    </p>
+
+    <!-- On-page anchor link ↓ (requirement: on-page anchor) -->
+    <a class="scroll-cta" href="#facts">Dive deeper ↓</a>
+
+    <!-- Image not from Bootstrap (requirement) -->
+    <img
+      class="hero-img"
+      src="images/jellyfish1.jpg"
+      alt="A glowing moon jellyfish drifting in dark water"
+    />
+  </section>
+
+  <!-- ══ MAIN CONTENT WRAPPER (div #1 for positioning) ══ -->
+  <div id="content-wrapper">
+
+    <!-- ══ FACTS SECTION — on-page anchor target ══ -->
+    <!-- div #2 for styling/positioning a block of content -->
+    <div id="facts-block">
+      <h2 class="section-title" id="facts">Wild Facts</h2>
+      <p>
+        Jellyfish are not fish at all — they're medusae, free-swimming members of the phylum
+        Cnidaria. They have no brain, no heart, no bones, and are made of roughly
+        <strong>95% water</strong>. Yet they are remarkably effective predators.
+      </p>
+
+      <!--
+        REQUIREMENT: An ordered list with an unordered list embedded inside each item.
+      -->
+      <ol class="outer-list">
+        <li>
+          <strong>Body &amp; Biology</strong>
+          <ul class="inner-list">
+            <li>No brain, heart, or blood — only a simple nerve net</li>
+            <li>Three layers: epidermis, mesoglea (jelly), and gastrodermis</li>
+            <li>Mouth and anus are the same opening</li>
+            <li>Some species are biologically immortal (Turritopsis dohrnii)</li>
+          </ul>
+        </li>
+        <li>
+          <strong>Movement &amp; Hunting</strong>
+          <ul class="inner-list">
+            <li>Propel themselves by rhythmically contracting their bell</li>
+            <li>Drift with ocean currents to conserve energy</li>
+            <li>Stinging cells (nematocysts) fire in under 700 nanoseconds</li>
+            <li>Tentacles can extend several meters to catch prey</li>
+          </ul>
+        </li>
+        <li>
+          <strong>Ecology &amp; Significance</strong>
+          <ul class="inner-list">
+            <li>Key food source for sea turtles, tuna, and ocean sunfish</li>
+            <li>"Blooms" of millions can clog power plant intakes</li>
+            <li>Some glow bioluminescently — GFP (green fluorescent protein) was discovered in jellyfish</li>
+            <li>Climate change is causing more frequent and larger blooms worldwide</li>
+          </ul>
+        </li>
+        <li>
+          <strong>Human Uses</strong>
+          <ul class="inner-list">
+            <li>Eaten as a delicacy in China, Japan, and Korea</li>
+            <li>GFP used as a marker in biomedical research</li>
+            <li>Collagen studied for wound-healing applications</li>
+            <li>Inspiring soft-robotics designs in engineering</li>
+          </ul>
+        </li>
+      </ol>
+    </div>
+
+    <!-- ══ SPECIES SECTION ══ -->
+    <div id="species-block">
+      <h2 class="section-title" id="species">Notable Species</h2>
+      <div class="species-grid">
+        <div class="species-card">
+          <h3>Moon Jellyfish</h3>
+          <p><em>Aurelia aurita</em> — the most common species worldwide. Translucent, with four visible gonads in a clover pattern.</p>
+        </div>
+        <div class="species-card">
+          <h3>Lion's Mane</h3>
+          <p><em>Cyanea capillata</em> — the largest jellyfish on Earth. Its tentacles can exceed 36 meters in length.</p>
+        </div>
+        <div class="species-card">
+          <h3>Box Jellyfish</h3>
+          <p><em>Chironex fleckeri</em> — has 24 eyes and is considered the most venomous marine animal known.</p>
+        </div>
+        <div class="species-card">
+          <h3>Immortal Jellyfish</h3>
+          <p><em>Turritopsis dohrnii</em> — can revert to its juvenile polyp state after reaching adulthood, cycling indefinitely.</p>
+        </div>
+        <div class="species-card">
+          <h3>Cannonball Jellyfish</h3>
+          <p><em>Stomolophus meleagris</em> — a dome-shaped species common in the Gulf of Mexico and Atlantic coast.</p>
+        </div>
+        <div class="species-card">
+          <h3>Spotted Jelly</h3>
+          <p><em>Mastigias papua</em> — carries symbiotic algae that photosynthesize to help feed the jellyfish.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ IMAGE GALLERY ══ (images not from Bootstrap) -->
+    <div id="gallery-block">
+      <h2 class="section-title" id="gallery">Gallery</h2>
+      <div class="gallery-grid">
+        <img
+          src="images/jellyfish2.jpg"
+          alt="Jellyfish in open water"
+        />
+        <img
+          src="images/jellyfish3.jpg"
+          alt="Jellyfish up close"
+        />
+      </div>
+    </div>
+
+    <!-- ══ YOUTUBE VIDEO (requirement) ══ -->
+    <!-- div #3 for positioning/styling -->
+    <div id="video-block">
+      <h2 class="section-title" id="video">Watch Them Move</h2>
+      <p style="color: #8ab0c4; margin-bottom: 0.5rem;">
+        This BBC Earth clip captures the haunting beauty of jellyfish in the wild.
+        (Video will work once the page is hosted online.)
+      </p>
+      <div class="video-wrapper">
+        <!-- Embedded YouTube video -->
+        <iframe
+          src="https://www.youtube.com/embed/sAXjp7U0taI"
+          title="Jellyfish — BBC Earth"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+
+  <!-- ══ FOOTER ══ -->
+  <footer>
+    <p>Made with curiosity &amp; CSS &nbsp;·&nbsp; <a href="Resume.html" target="_blank">My Resume</a> &nbsp;·&nbsp; <a href="riddle.html" target="_blank">Riddle Game</a></p>
+    <p style="margin-top:0.4rem; font-size:0.65rem;">Images via Wikimedia Commons (CC licensed) &nbsp;·&nbsp; Video via BBC Earth on YouTube</p>
+  </footer>
+
+</body>
+</html>
